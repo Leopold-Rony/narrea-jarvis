@@ -1,0 +1,20 @@
+# Environnement Python
+venv/
+__pycache__/
+*.pyc
+
+# Modèles IA (trop volumineux pour git)
+models/
+*.gguf
+
+# llama.cpp compilé (à recloner/rebuild, pas à versionner)
+llama.cpp/
+*.build/
+build/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Éventuels fichiers de config locaux/secrets
+*.env
