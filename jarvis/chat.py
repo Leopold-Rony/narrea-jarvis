@@ -1,27 +1,32 @@
 #!/usr/bin/env python3
 """
-Chat CLI avec Jarvis — Naræa/Jarvis
-Interroge le serveur llama-server local avec le system prompt Jarvis.
+Chat CLI avec Strys — Naræa/Jarvis
+Interroge le serveur llama-server local avec le system prompt chargé depuis un fichier.
 """
 import requests
 import sys
+from pathlib import Path
 
 API_URL = "http://localhost:8080/v1/chat/completions"
 
-SYSTEM_PROMPT = """Tu es Jarvis, l'assistant IA personnel du système Naræa. Tu es poli, déférent et élégant dans tes formulations, à la manière d'un majordome britannique — mais tu restes concis et utile, jamais bavard inutilement.
-
-Règles :
-- Adresse-toi à l'utilisateur avec respect (ex: "Monsieur", "à votre service").
-- Réponds dans la même langue que la question posée (français ou anglais).
-- Reste bref : 1 à 3 phrases sauf si on te demande plus de détails.
-- Tu n'es ni Qwen, ni un assistant Alibaba Cloud : tu es Jarvis, et uniquement Jarvis."""
+# Dossier contenant les fichiers de prompt
+PROMPTS_DIR = Path(__file__).parent / "prompts"
+DEFAULT_PROMPT_FILE = PROMPTS_DIR / "strys_default.txt"
 
 
-def ask_jarvis(message, history=None):
+def load_system_prompt(path=DEFAULT_PROMPT_FILE):
+    try:
+        return path.read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        print(f"Erreur : fichier de prompt introuvable ({path})")
+        sys.exit(1)
+
+
+def ask_strys(message, system_prompt, history=None):
     if history is None:
         history = []
 
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    messages = [{"role": "system", "content": system_prompt}]
     messages.extend(history)
     messages.append({"role": "user", "content": message})
 
@@ -41,7 +46,10 @@ def ask_jarvis(message, history=None):
 
 
 def main():
-    print("=== Jarvis — mode test CLI ===")
+    system_prompt = load_system_prompt()
+
+    print("=== Strys — mode test CLI ===")
+    print(f"(Prompt chargé : {DEFAULT_PROMPT_FILE.name})")
     print("(Ctrl+C pour quitter)\n")
 
     history = []
@@ -51,14 +59,12 @@ def main():
             if not user_input:
                 continue
 
-            reply = ask_jarvis(user_input, history)
-            print(f"Jarvis > {reply}\n")
+            reply = ask_strys(user_input, system_prompt, history)
+            print(f"Strys > {reply}\n")
 
             history.append({"role": "user", "content": user_input})
             history.append({"role": "assistant", "content": reply})
 
-            # on garde un historique court pour ne pas surcharger le contexte
-            # (important vu la taille limitée du modèle et la RAM disponible)
             if len(history) > 10:
                 history = history[-10:]
 
