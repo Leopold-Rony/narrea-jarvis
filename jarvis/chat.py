@@ -7,6 +7,10 @@ import requests
 import sys
 from pathlib import Path
 
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from audio.sounds import jingle_strys_ready
+
 API_URL = "http://localhost:8080/v1/chat/completions"
 
 # Dossier contenant les fichiers de prompt
@@ -51,6 +55,8 @@ def main():
     print("=== Strys — mode test CLI ===")
     print(f"(Prompt chargé : {DEFAULT_PROMPT_FILE.name})")
     print("(Ctrl+C pour quitter)\n")
+
+    jingle_strys_ready()
 
     history = []
     while True:

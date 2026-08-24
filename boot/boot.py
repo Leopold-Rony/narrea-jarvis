@@ -5,6 +5,10 @@ import sys
 from rich.console import Console
 from rich.text import Text
 
+
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
+from audio.sounds import jingle_boot
+
 console = Console()
 
 # Palette rétro phosphore vert (classique terminal DOS-like)
@@ -38,6 +42,7 @@ def print_logo():
 
 def main():
     console.clear()
+    jingle_boot()
     print_logo()
     time.sleep(0.5)
     typewriter("NARÆA SYSTEM v0.1 — HP ProBook 450 G7", style=AMBER, delay=0.01)

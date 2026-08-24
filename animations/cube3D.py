@@ -9,6 +9,10 @@ import shutil
 from rich.console import Console
 from rich.live import Live
 from rich.text import Text
+import sys
+
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
+from audio.sounds import jingle_cube3d
 
 console = Console()
 
@@ -100,6 +104,8 @@ def run(duration=DURATION):
     frame_delay = 1 / FPS
     start = time.time()
     angle_x, angle_y = 0.0, 0.0
+
+    jingle_cube3d()
 
     with Live(console=console, screen=True, auto_refresh=False) as live:
         while time.time() - start < duration:

@@ -6,9 +6,14 @@ Conçu pour rester léger en CPU/RAM (pas de dépendance lourde, juste Rich).
 import random
 import time
 import shutil
+import sys
 from rich.console import Console
 from rich.live import Live
 from rich.text import Text
+
+
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
+from audio.sounds import jingle_matrix
 
 console = Console()
 
@@ -76,6 +81,7 @@ def run(duration=DURATION):
     columns = [Column(height) for _ in range(width)]
     frame_delay = 1 / FPS
     start = time.time()
+    jingle_matrix()
 
     with Live(console=console, screen=True, auto_refresh=False) as live:
         while time.time() - start < duration:
