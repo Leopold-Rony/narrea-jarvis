@@ -75,8 +75,7 @@ def render_frame(columns, width, height):
     return text
 
 
-def run(duration=DURATION):
-
+def run(duration=DURATION, live=None):
     term_size = shutil.get_terminal_size(fallback=(80, 24))
     width, height = term_size.columns, term_size.lines - 1
 
@@ -86,7 +85,7 @@ def run(duration=DURATION):
     frame_delay = 1 / FPS
     start = time.time()
 
-    with Live(console=console, screen=True, auto_refresh=False) as live:
+    def loop(live_obj):
         while time.time() - start < duration:
             if check_skip():
                 break
@@ -94,8 +93,14 @@ def run(duration=DURATION):
                 col.maybe_start()
                 col.step()
             frame = render_frame(columns, width, height)
-            live.update(frame, refresh=True)
+            live_obj.update(frame, refresh=True)
             time.sleep(frame_delay)
+
+    if live is not None:
+        loop(live)
+    else:
+        with Live(console=console, screen=True, auto_refresh=False) as live_obj:
+            loop(live_obj)
 
 
 if __name__ == "__main__":
