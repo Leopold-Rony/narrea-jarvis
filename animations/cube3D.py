@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#cube3d.py
 """
 Rotation 3D — cube filaire ASCII — Naræa/Jarvis
 Léger : projection + rotation de 8 points, pas de dépendance externe (juste math + Rich).
