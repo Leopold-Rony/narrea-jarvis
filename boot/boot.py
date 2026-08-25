@@ -4,6 +4,7 @@ import random
 import sys
 from rich.console import Console
 from rich.text import Text
+from boot.skip import check_skip
 
 
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
@@ -24,8 +25,15 @@ def typewriter(text, style=GREEN, delay=0.015, end="\n"):
     console.print("", end=end)
 
 def fake_check(label, duration=0.4, ok=True):
+    from boot.skip import check_skip
     console.print(f"[{DIM_GREEN}]{label}...[/{DIM_GREEN}]", end=" ")
-    time.sleep(duration)
+    elapsed = 0
+    while elapsed < duration:
+        if check_skip():
+            console.print(f"[{GREEN}][SKIP][/{GREEN}]")
+            return
+        time.sleep(0.05)
+        elapsed += 0.05
     status = "[OK]" if ok else "[FAIL]"
     style = GREEN if ok else "bold red"
     console.print(f"[{style}]{status}[/{style}]")

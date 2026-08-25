@@ -10,6 +10,7 @@ import sys
 from rich.console import Console
 from rich.live import Live
 from rich.text import Text
+from boot.skip import check_skip  
 
 
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
@@ -75,16 +76,20 @@ def render_frame(columns, width, height):
 
 
 def run(duration=DURATION):
+
     term_size = shutil.get_terminal_size(fallback=(80, 24))
     width, height = term_size.columns, term_size.lines - 1
+
+    jingle_matrix()
 
     columns = [Column(height) for _ in range(width)]
     frame_delay = 1 / FPS
     start = time.time()
-    jingle_matrix()
 
     with Live(console=console, screen=True, auto_refresh=False) as live:
         while time.time() - start < duration:
+            if check_skip():
+                break
             for col in columns:
                 col.maybe_start()
                 col.step()

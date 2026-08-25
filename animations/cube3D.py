@@ -9,6 +9,7 @@ import shutil
 from rich.console import Console
 from rich.live import Live
 from rich.text import Text
+from boot.skip import check_skip
 import sys
 
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent.parent))
@@ -109,6 +110,8 @@ def run(duration=DURATION):
 
     with Live(console=console, screen=True, auto_refresh=False) as live:
         while time.time() - start < duration:
+            if check_skip():
+                break
             frame = render_frame(angle_x, angle_y, width, height)
             live.update(frame, refresh=True)
             angle_x += ROTATION_SPEED * frame_delay
